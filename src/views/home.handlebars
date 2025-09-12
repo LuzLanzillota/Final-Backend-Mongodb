@@ -1,0 +1,89 @@
+<h1>Lista de productos</h1>
+
+<ul>
+    {{#each products}}
+    <li>
+        <strong>{{this.title}}</strong>
+        <br>
+        <img src="{{this.thumbnails.[0]}}" alt="{{this.title}}">
+        <br>
+        <p>{{this.description}}</p>
+        <strong> ${{this.price}}</strong>
+    </li>
+    {{/each}}
+</ul>
+
+<!-- 📌 Paginación -->
+
+<div>
+    <p>Página {{page}} de {{totalPages}}</p>
+
+    {{#if hasPrevPage}}
+        <a href="/products?page={{prevPage}}">Anterior</a>
+    {{/if}}
+
+    {{#if hasNextPage}}
+        <a href="/products?page={{nextPage}}">Siguiente</a>
+    {{/if}}
+</div>
+
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    h1 {
+        color: #000000;
+        text-align: center;
+        margin-bottom: 100px;
+    }
+
+    ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 500px;
+        background: #fff;
+        border: 2px solid #000;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    li strong {
+        margin-bottom: 10px;
+        font-size: 1.2em;
+    }
+
+    li em {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+
+    li img {
+        max-width: 120px;
+        height: auto;
+        margin-bottom: 15px;
+    }
+
+    li span.precio {
+        font-weight: bold;
+        margin-top: 10px;
+    }
+</style>

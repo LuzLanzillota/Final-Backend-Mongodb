@@ -1,0 +1,171 @@
+<h1>Productos en tiempo real</h1>
+<div>
+    <ul id="listaProductos">
+        {{#each products}}
+        <li>
+            <strong>{{this.title}}</strong>
+            <br>
+            <img src="{{this.thumbnails}}" alt="{{this.title}}">
+            <br>
+            <p>{{this.description}}</p>
+            <strong> ${{this.price}}</strong>
+        </li>
+        {{/each}}
+    </ul>
+</div>
+<h2>Agregar producto</h2>
+<div class="form-box">
+    <form id="formProducto">
+        <input type="text" name="title" placeholder="Título" required />
+        <input type="text" name="description" placeholder="Descripción" required />
+        <input type="text" name="code" placeholder="Código" required />
+        <input type="number" name="price" placeholder="Precio" required />
+        <input type="number" name="stock" placeholder="Stock" required />
+        <input type="text" name="category" placeholder="Categoría" required />
+        <input type="text" name="thumbnails" placeholder="Imagen URL" required />
+        <button type="submit">Agregar</button>
+    </form>
+
+</div>
+
+<h2>Eliminar producto</h2>
+<form id="formEliminar">
+    <select name="id" required>
+        {{#each products}}
+        <option value="{{this._id}}">{{this.title}} - ${{this.price}}</option>
+        {{/each}}
+    </select>
+    <button type="submit">Eliminar</button>
+</form>
+
+
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/realtime.js"></script>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    h1,
+    h2 {
+        color: #000000;
+        text-align: center;
+        margin-bottom: 100px;
+    }
+
+    div {
+        margin-bottom: 20px;
+    }
+
+    ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 500px;
+        background: #fff;
+        border: 2px solid #000;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    li strong {
+        margin-bottom: 10px;
+        font-size: 1.2em;
+    }
+
+    li em {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+
+    li img {
+        max-width: 120px;
+        height: auto;
+        margin-bottom: 15px;
+    }
+
+    li span.precio {
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .form-box {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        transition: box-shadow 0.3s ease, transform 0.2s ease;
+    }
+
+
+    .form-box input,
+    .form-box button {
+        width: 100%;
+        padding: 10px;
+        margin: 0.5rem 0;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    .form-box button {
+        background: #000;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .form-box button:hover {
+        background: #444;
+    }
+
+
+    button {
+
+        padding: 5px 10px;
+        background-color: #000000;
+        color: white;
+        border: none;
+        width: 10%;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #ffffff;
+        color: #000000;
+        border: 2px solid #000000;
+    }
+
+    #formEliminar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin: 20px auto;
+    }
+
+    #formEliminar input,
+    #formEliminar button {
+        width: 650px;
+    }
+</style>
