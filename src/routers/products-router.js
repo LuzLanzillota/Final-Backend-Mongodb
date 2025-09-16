@@ -107,4 +107,43 @@ router.delete('/:pid', async (req, res) => {
     }
 });
 
+router.get("/view", async (req, res) => {
+    try {
+        let { limit = 10, page = 1, sort = null, query = null } = req.query;
+        limit = parseInt(limit);
+        page = parseInt(page);
+
+        let filter = {};
+        if (query) {
+            if (query === "true" || query === "false") filter.status = query === "true";
+            else filter.category = query;
+        }
+
+        const options = {
+            limit,
+            page,
+            sort: sort ? { price: sort === "asc" ? 1 : -1 } : { price: 1 }
+        };
+
+        const result = await Product.paginate(filter, options);
+
+        res.render("products", {
+            products: result.docs,
+            page: result.page,
+            totalPages: result.totalPages,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            query,
+            sort,
+            limit
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error al cargar los productos");
+    }
+});
+
+
 export default router;

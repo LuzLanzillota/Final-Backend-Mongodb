@@ -1,0 +1,105 @@
+<h1 class="title">Lista de productos</h1>
+<table class="product-table">
+    <thead>
+        <tr>
+            <th>Imagen</th>
+            <th>Título</th>
+            <th>Precio</th>
+            <th>Categoría</th>
+            <th>Stock</th>
+            <th>Disponibilidad</th>
+            <th>Detalle</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody> {{#each products}} <tr>
+            <td> <img src="{{this.thumbnails}}" alt="{{this.title}}" class="product-img"> </td>
+            <td>{{this.title}}</td>
+            <td>${{this.price}}</td>
+            <td>{{this.category}}</td>
+            <td>{{this.stock}}</td>
+            <td>{{#if this.status}}Disponible{{else}}Agotado{{/if}}</td>
+            <td> <a href="/products/{{this._id}}" class="detail-link">Ver detalle</a> </td>
+            <td>
+                <form action="/api/carts/64fd9d2c9cXXXXXX/products/{{this._id}}" method="POST"> <button
+                        type="submit">Agregar al carrito</button> </form>
+            </td>
+        </tr> {{/each}} </tbody>
+</table>
+<div class="pagination"> {{#if hasPrevPage}} <a
+        href="?page={{prevPage}}&limit={{limit}}&sort={{sort}}&query={{query}}">Anterior</a> {{/if}} <span>Página
+        {{page}} de {{totalPages}}</span> {{#if hasNextPage}} <a
+        href="?page={{nextPage}}&limit={{limit}}&sort={{sort}}&query={{query}}">Siguiente</a> {{/if}} </div>
+
+<style>
+    .title {
+        text-align: center;
+        margin: 30px 0;
+        font-size: 2rem;
+    }
+
+    .product-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px auto;
+        font-family: Arial, sans-serif;
+    }
+
+    .product-table th,
+    .product-table td {
+        padding: 12px 15px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .product-table th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+    }
+
+    .product-table tr:hover {
+        background-color: #f9f9f9;
+    }
+
+    .product-img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .detail-link {
+        color: #0077cc;
+        text-decoration: none;
+    }
+
+    .detail-link:hover {
+        text-decoration: underline;
+    }
+
+    .product-table button {
+        background-color: black;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .product-table button:hover {
+        background-color: #444;
+    }
+
+    .pagination {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .pagination a {
+        margin: 0 10px;
+        text-decoration: none;
+        color: #0077cc;
+    }
+</style>

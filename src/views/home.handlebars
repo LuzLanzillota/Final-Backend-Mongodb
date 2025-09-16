@@ -5,27 +5,54 @@
     <li>
         <strong>{{this.title}}</strong>
         <br>
-        <img src="{{this.thumbnails.[0]}}" alt="{{this.title}}">
+        <img src="{{this.thumbnails.[0]}}" alt="{{this.title}}" width="150">
         <br>
         <p>{{this.description}}</p>
         <strong> ${{this.price}}</strong>
+        <button class="btn btn-dark add-to-cart" data-pid="{{this._id}}">Agregar a carrito</button>
     </li>
     {{/each}}
 </ul>
 
-<!-- 📌 Paginación -->
-
-<div>
-    <p>Página {{page}} de {{totalPages}}</p>
-
-    {{#if hasPrevPage}}
-        <a href="/products?page={{prevPage}}">Anterior</a>
-    {{/if}}
-
-    {{#if hasNextPage}}
-        <a href="/products?page={{nextPage}}">Siguiente</a>
-    {{/if}}
+<!-- Botón oculto que se muestra al agregar un producto -->
+<div id="goToCartContainer" style="margin-top:20px; display:none;">
+    <a id="goToCartBtn" class="btn btn-success">Ir al carrito</a>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const buttons = document.querySelectorAll(".add-to-cart");
+    const goToCartContainer = document.getElementById("goToCartContainer");
+    const goToCartBtn = document.getElementById("goToCartBtn");
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", async () => {
+            let cartId = localStorage.getItem("cartId");
+            const productId = btn.dataset.pid;
+
+            // Si no hay carrito, lo creamos
+            if (!cartId) {
+                const resp = await fetch("/api/carts", { method: "POST" });
+                const data = await resp.json();
+                cartId = data.cart._id;
+                localStorage.setItem("cartId", cartId);
+            }
+
+            // Agregamos producto al carrito
+            await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ quantity: 1 })
+            });
+
+            // Mostrar botón "Ir al carrito"
+            goToCartContainer.style.display = "block";
+            goToCartBtn.href = `/api/carts/${cartId}/view`;
+        });
+    });
+});
+</script>
+
 
 
 

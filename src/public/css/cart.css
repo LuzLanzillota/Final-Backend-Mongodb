@@ -1,0 +1,124 @@
+body { 
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background: #fff;
+    color: #111;
+    margin: 0;
+    padding: 0;
+}
+
+.cart-container {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #000;
+    text-align: center;
+}
+
+/* Tabla estilo minimalista */
+.cart-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.cart-table th,
+.cart-table td {
+    padding: 18px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+    color: #333;
+}
+
+.cart-table th {
+    background: #fff; /* en vez de negro */
+    color: #111;
+    font-weight: 600;
+    border-bottom: 2px solid #ddd; /* línea sutil como separación */
+}
+
+.cart-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Input */
+input[type="number"] {
+    width: 60px;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+    background: #fff;
+    color: #111;
+}
+
+/* Botones */
+button {
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-update {
+    background: #000;
+    color: #fff;
+}
+
+.btn-update:hover {
+    background: #444;
+}
+
+.btn-delete {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.btn-delete:hover {
+    background: #c0392b;
+}
+
+.btn-clear {
+    background: transparent;
+    color: #000;
+    border: 1px solid #000;
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+.btn-clear:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* Footer */
+.cart-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-footer h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #111;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+    font-size: 1.2rem;
+}

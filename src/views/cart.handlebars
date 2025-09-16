@@ -1,0 +1,52 @@
+<link rel="stylesheet" href="/css/cart.css">
+<div class="cart-container">
+    <h1>Carrito de compras</h1>
+
+    {{#if cart.products.length}}
+        <div class="cart-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each cart.products}}
+                    <tr>
+                        <td>{{this.product.title}}</td>
+                        <td>${{this.product.price}}</td>
+                        <td>
+                            <form method="POST"
+                                action="/api/carts/{{../cart._id}}/products/{{this.product._id}}?_method=PUT">
+                                <input type="number" name="quantity" value="{{this.quantity}}" min="1" />
+                                <button type="submit" class="btn-update">Actualizar</button>
+                            </form>
+                        </td>
+                        <td>${{multiply this.product.price this.quantity}}</td>
+                        <td>
+                            <form method="POST"
+                                action="/api/carts/{{../cart._id}}/products/{{this.product._id}}?_method=DELETE">
+                                <button type="submit" class="btn-delete">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-footer">
+            <h3>Total: ${{#sum cart.products}}{{/sum}}</h3>
+            <form method="POST" action="/api/carts/{{cart._id}}/clear">
+                <button type="submit" class="btn-clear">Vaciar carrito</button>
+            </form>
+        </div>
+    {{else}}
+        <p class="empty">El carrito está vacío</p>
+        <a href="/" class="btn-add">Ver productos</a>
+    {{/if}}
+</div>
