@@ -4,12 +4,12 @@ import Cart from "../models/cart.model.js";
 
 const router = Router();
 
-// 📌 /products → lista con paginación
+// /products → lista con paginación y cartId en sesión
 router.get("/products", async (req, res) => {
     try {
         let { limit = 10, page = 1, sort = null, query = null } = req.query;
-        limit = parseInt(limit);
-        page = parseInt(page);
+        limit = parseInt(limit) || 10;
+        page = parseInt(page) || 1;
 
         let filter = {};
         if (query) {
@@ -23,7 +23,15 @@ router.get("/products", async (req, res) => {
             sort: sort ? { price: sort === "asc" ? 1 : -1 } : {}
         };
 
+        // Si usás mongoose-paginate-v2
         const result = await Product.paginate(filter, { ...options, lean: true });
+
+        // Aseguramos un cartId en sesión
+        if (!req.session.cartId) {
+            const newCart = await Cart.create({ products: [] });
+            req.session.cartId = newCart._id.toString();
+        }
+        const cartId = req.session.cartId;
 
         res.render("products", {
             products: result.docs,
@@ -35,27 +43,40 @@ router.get("/products", async (req, res) => {
             nextPage: result.nextPage,
             query,
             sort,
-            limit
+            limit,
+            cartId
         });
     } catch (err) {
+        console.error(err);
         res.status(500).send("Error al cargar los productos");
     }
 });
 
-// 📌 /products/:pid → detalle del producto
+// /products/:pid -> detalle con opción para elegir carrito (por si querés)
 router.get("/products/:pid", async (req, res) => {
     try {
         const { pid } = req.params;
         const product = await Product.findById(pid).lean();
         if (!product) return res.status(404).send("Producto no encontrado");
 
-        res.render("productDetail", { product });
+        // Traigo todos los carritos (solo ids) por si querés seleccionar a cuál agregar
+        const carts = await Cart.find().select("_id").lean();
+
+        // Aseguramos cartId en sesión también
+        if (!req.session.cartId) {
+            const newCart = await Cart.create({ products: [] });
+            req.session.cartId = newCart._id.toString();
+        }
+        const cartId = req.session.cartId;
+
+        res.render("productDetail", { product, carts, cartId });
     } catch (err) {
+        console.error(err);
         res.status(500).send("Error al cargar el producto");
     }
 });
 
-// 📌 /carts/:cid → vista del carrito
+// /carts/:cid -> vista del carrito (ya la tenías bien)
 router.get("/carts/:cid", async (req, res) => {
     try {
         const { cid } = req.params;
@@ -64,6 +85,7 @@ router.get("/carts/:cid", async (req, res) => {
 
         res.render("cart", { cart });
     } catch (err) {
+        console.error(err);
         res.status(500).send("Error al cargar el carrito");
     }
 });

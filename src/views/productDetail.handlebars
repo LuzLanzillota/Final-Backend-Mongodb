@@ -1,10 +1,109 @@
-<h1>{{product.title}}</h1>
-<p><strong>Precio:</strong> ${{product.price}}</p>
-<p><strong>Categoría:</strong> {{product.category}}</p>
-<p><strong>Stock:</strong> {{product.stock}}</p>
-<p><strong>Descripción:</strong> {{product.description}}</p>
-<p><strong>Estado:</strong> {{#if product.status}}Disponible{{else}}Agotado{{/if}}</p>
+<div class="product-card">
+    <img src="{{product.thumbnails.[0]}}" alt="{{product.title}}" class="product-img">
 
-<form action="/api/carts/ID_DEL_CARRITO/products/{{product._id}}" method="POST">
-    <button type="submit">Agregar al carrito</button>
-</form>
+    <div class="product-info">
+        <h1>{{product.title}}</h1>
+        <p><strong>Precio:</strong> ${{product.price}}</p>
+        <p><strong>Categoría:</strong> {{categoria product.category}}</p>
+        <p><strong>Stock:</strong> {{product.stock}}</p>
+        <p><strong>Descripción:</strong> {{product.description}}</p>
+        <p><strong>Estado:</strong>
+            {{#if product.status}}
+                <span class="status available">Disponible</span>
+            {{else}}
+                <span class="status out">Agotado</span>
+            {{/if}}
+        </p>
+
+        <form id="addToCartForm" method="POST">
+            <label for="cartSelect"><strong>Seleccionar carrito:</strong></label>
+            <select id="cartSelect" name="cid" required>
+                {{#each carts}}
+                    <option value="{{this._id}}">{{this._id}}</option>
+                {{/each}}
+            </select>
+
+            <button type="submit" class="btn-add">Agregar al carrito</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById("addToCartForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const cid = document.getElementById("cartSelect").value;
+        const action = `/api/carts/${cid}/products/{{product._id}}`;
+        this.setAttribute("action", action);
+        this.submit();
+    });
+</script>
+
+<style>
+    .product-card {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 40px;
+        display: flex;
+        gap: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        background: #fff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .product-img {
+        max-width: 500px;
+        border-radius: 12px;
+        object-fit: cover;
+
+    }
+
+    .product-info {
+        flex: 1;
+    }
+
+    .product-info h1 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        color: #222;
+    }
+
+    .product-info p {
+        margin: 6px 0;
+        color: #555;
+        font-size: 1rem;
+    }
+
+    .status {
+        font-weight: bold;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+
+    .status.available {
+        background: #e8f8f0;
+        color: #0a8754;
+    }
+
+    .status.out {
+        background: #fdeaea;
+        color: #d93025;
+    }
+
+    .btn-add {
+        margin-top: 15px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #000, #444);
+        color: #fff;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .btn-add:hover {
+        background: linear-gradient(135deg, #222, #000);
+    }
+</style>

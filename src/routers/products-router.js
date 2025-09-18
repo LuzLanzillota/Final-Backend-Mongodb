@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import Product from '../models/product.model.js';
-
+import Handlebars from "handlebars";
 const router = Router();
 
 // ✅ Obtener productos con paginación, filtros y ordenamiento
@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// ✅ Obtener un producto por ID (MongoId, no número)
+// ✅ Obtener un producto por ID
 router.get('/:pid', async (req, res) => {
     try {
         const { pid } = req.params;
@@ -145,5 +145,14 @@ router.get("/view", async (req, res) => {
     }
 });
 
+Handlebars.registerHelper("eq", function (a, b) {
+  return a === b;
+});
+
+Handlebars.registerHelper("categoria", function (cat) {
+    if (cat === "F") return "Femenino";
+    if (cat === "M") return "Masculino";
+    return "Unisex";
+});
 
 export default router;

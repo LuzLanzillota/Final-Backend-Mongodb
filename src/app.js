@@ -5,31 +5,41 @@ import { engine } from 'express-handlebars';
 import mongoose from 'mongoose';
 import productsRouter from './routers/products-router.js';
 import cartsRouter from './routers/carts-router.js';
+import viewsRouter from './routers/views.router.js';
 import Product from './models/product.model.js';
 import methodOverride from 'method-override';
-import viewsRouter from './routers/views.router.js';
+import session from 'express-session';
+
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
-
 const PORT = 8080;
 
-// 🔑 Habilitamos override ANTES de las rutas
-app.use(methodOverride('_method'));
-app.use('/', viewsRouter);
 // Conexión a Mongo
 const MONGO_URL = "mongodb+srv://Luz:1234@cluster0.obgdwct.mongodb.net/Basedeperfumes?retryWrites=true&w=majority&appName=Cluster0";
-
 mongoose.connect(MONGO_URL)
     .then(() => console.log("✅ Conectado a MongoDB"))
     .catch(err => console.error("❌ Error conectando a Mongo:", err));
 
-// Middlewares
+// Middlewares IMPORTANTES: poner antes de montar routers que los usan
+app.use(methodOverride('_method'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+  secret: 'un-secreto-cualquiera',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 }
+}));
+
+app.use(express.static('./public'));
+
+// Mount routers (ahora ya con session y parsers activos)
+app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
-app.use(express.static('./public')); 
 
 // Handlebars config con helpers
 app.engine("handlebars", engine({
@@ -47,38 +57,19 @@ app.engine("handlebars", engine({
 app.set("view engine", "handlebars");
 app.set("views", "./views");
 
-// Rutas vistas
+// Rutas vistas simples si las tenés
 app.get('/', async (req, res) => {
     const products = await Product.find().lean();
     res.render('home', { products });
 });
 
-app.get('/realtimeproducts', async (req, res) => {
-    const products = await Product.find().lean();
-    res.render('realTimeProducts', { products });
-});
-
-// Websockets
+// Websockets (mantén tu lógica)
 io.on('connection', async (socket) => {
     console.log('🔌 Cliente conectado');
-
-    // Enviar productos iniciales desde Mongo
     socket.emit('productos', await Product.find().lean());
-
-    // Escuchar nuevo producto
-    socket.on('nuevoProducto', async (producto) => {
-        await Product.create(producto);
-        io.emit('productos', await Product.find().lean());
-    });
-
-    // Escuchar eliminación
-    socket.on('eliminarProducto', async (id) => {
-        await Product.findByIdAndDelete(id);
-        io.emit('productos', await Product.find().lean());
-    });
+    // ...
 });
 
-// Iniciar servidor
 httpServer.listen(PORT, () => 
     console.log("🚀 Servidor escuchando en puerto " + PORT)
 );

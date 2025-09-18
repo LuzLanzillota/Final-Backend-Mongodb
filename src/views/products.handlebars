@@ -12,24 +12,40 @@
             <th>Acción</th>
         </tr>
     </thead>
-    <tbody> {{#each products}} <tr>
-            <td> <img src="{{this.thumbnails}}" alt="{{this.title}}" class="product-img"> </td>
+    <tbody>
+        {{#each products}}
+        <tr>
+            <td>
+                {{#if this.thumbnails.[0]}}
+                <img src="{{this.thumbnails.[0]}}" alt="{{this.title}}" class="product-img">
+                {{else}}
+                <span>No image</span>
+                {{/if}}
+            </td>
             <td>{{this.title}}</td>
             <td>${{this.price}}</td>
             <td>{{this.category}}</td>
             <td>{{this.stock}}</td>
             <td>{{#if this.status}}Disponible{{else}}Agotado{{/if}}</td>
-            <td> <a href="/products/{{this._id}}" class="detail-link">Ver detalle</a> </td>
+            <td><a href="/products/{{this._id}}" class="detail-link">Ver detalle</a></td>
             <td>
-                <form action="/api/carts/64fd9d2c9cXXXXXX/products/{{this._id}}" method="POST"> <button
-                        type="submit">Agregar al carrito</button> </form>
+                <!-- Usamos cartId dinámico desde la sesión -->
+                <form action="/api/carts/{{cart._id}}/products/{{this._id}}" method="POST">
+                    <button type="submit">Agregar al carrito</button>
+                </form>
+
             </td>
-        </tr> {{/each}} </tbody>
+        </tr>
+        {{/each}}
+    </tbody>
 </table>
-<div class="pagination"> {{#if hasPrevPage}} <a
-        href="?page={{prevPage}}&limit={{limit}}&sort={{sort}}&query={{query}}">Anterior</a> {{/if}} <span>Página
-        {{page}} de {{totalPages}}</span> {{#if hasNextPage}} <a
-        href="?page={{nextPage}}&limit={{limit}}&sort={{sort}}&query={{query}}">Siguiente</a> {{/if}} </div>
+
+<div class="pagination">
+    {{#if hasPrevPage}} <a href="?page={{prevPage}}&limit={{limit}}&sort={{sort}}&query={{query}}">Anterior</a> {{/if}}
+    <span>Página {{page}} de {{totalPages}}</span>
+    {{#if hasNextPage}} <a href="?page={{nextPage}}&limit={{limit}}&sort={{sort}}&query={{query}}">Siguiente</a> {{/if}}
+</div>
+
 
 <style>
     .title {
